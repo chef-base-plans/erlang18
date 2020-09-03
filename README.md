@@ -50,7 +50,29 @@ For example:
 
 ```bash
 $ hab pkg install core/erlang18 --binlink
-TODO: ADD THE OUTPUT HERE
+» Installing core/erlang18
+☁ Determining latest version of core/erlang18 in the 'stable' channel
+→ Found newer installed version (core/erlang18/18.3/20200903164422) than remote version (core/erlang18/18.3/20200404000818)
+→ Using core/erlang18/18.3/20200903164422
+★ Install of core/erlang18/18.3/20200903164422 complete with 0 new packages installed.
+» Binlinking typer from core/erlang18/18.3/20200903164422 into /bin
+★ Binlinked typer from core/erlang18/18.3/20200903164422 to /bin/typer
+» Binlinking to_erl from core/erlang18/18.3/20200903164422 into /bin
+★ Binlinked to_erl from core/erlang18/18.3/20200903164422 to /bin/to_erl
+» Binlinking ct_run from core/erlang18/18.3/20200903164422 into /bin
+★ Binlinked ct_run from core/erlang18/18.3/20200903164422 to /bin/ct_run
+» Binlinking erl from core/erlang18/18.3/20200903164422 into /bin
+★ Binlinked erl from core/erlang18/18.3/20200903164422 to /bin/erl
+» Binlinking escript from core/erlang18/18.3/20200903164422 into /bin
+★ Binlinked escript from core/erlang18/18.3/20200903164422 to /bin/escript
+» Binlinking run_erl from core/erlang18/18.3/20200903164422 into /bin
+★ Binlinked run_erl from core/erlang18/18.3/20200903164422 to /bin/run_erl
+» Binlinking epmd from core/erlang18/18.3/20200903164422 into /bin
+★ Binlinked epmd from core/erlang18/18.3/20200903164422 to /bin/epmd
+» Binlinking dialyzer from core/erlang18/18.3/20200903164422 into /bin
+★ Binlinked dialyzer from core/erlang18/18.3/20200903164422 to /bin/dialyzer
+» Binlinking erlc from core/erlang18/18.3/20200903164422 into /bin
+★ Binlinked erlc from core/erlang18/18.3/20200903164422 to /bin/erlc
 ```
 
 #### Using an example binary
