@@ -24,7 +24,6 @@ control 'core-plans-erlang18-works' do
   describe plan_installation_directory do
     its('exit_status') { should eq 0 }
     its('stdout') { should_not be_empty }
-    its('stderr') { should be_empty }
   end
   
   plan_pkg_version = plan_installation_directory.stdout.split("/")[5]
@@ -38,7 +37,6 @@ control 'core-plans-erlang18-works' do
       exit_pattern: /^[0]$/,
     },
     "epmd" => {
-      io: "stderr", 
     },
     "erl" => {
       command_suffix: "-eval '{ok, Version} = file:read_file(filename:join([code:root_dir(), \"releases\", erlang:system_info(otp_release), \"OTP_VERSION\"])), io:fwrite(Version), halt().' -noshell",
@@ -46,7 +44,6 @@ control 'core-plans-erlang18-works' do
       exit_pattern: /^[0]$/,
     },
     "erlc" => {
-      io: "stderr", 
     },
     "escript" => {
       command_suffix: "",
@@ -59,10 +56,8 @@ control 'core-plans-erlang18-works' do
       END
     },
     "run_erl" => {
-      io: "stderr",
     },
     "to_erl" => {
-      io: "stderr",
     },
     "typer" => {
       command_suffix: "--help",
@@ -70,29 +65,28 @@ control 'core-plans-erlang18-works' do
     },
   }.each do |binary_name, value|
     # set default values if each binary_name doesn't define an over-ride
-    command_suffix = value[:command_suffix] || "-help"
+    command_suffix = value.has_key?(:command_suffix) ? "#{value[:command_suffix]} 2>&1" : "-help 2>&1"
     command_output_pattern = value[:command_output_pattern] || /[uU]sage:.+#{binary_name}/ 
     exit_pattern = value[:exit_pattern] || /^[^0]$/ # use /^[^0]$/ for non-zero exit status
-    io = value[:io] || "stdout"
     script = value[:script]
 
     # set default 'command_under_test' only adding a Tempfile if 'script' is defined
     command_full_path = File.join(plan_installation_directory.stdout.strip, "bin", binary_name)
-    command_statement = "#{command_full_path} #{command_suffix}"
     command_under_test = nil
     if(script)
       Tempfile.open('foo') do |f|
         f << script
-        command_under_test = command("#{command_statement} #{f.path}")
+        sleep(1) # ensure file is present
+        command_under_test = command("#{command_full_path} #{f.path}")
       end
     else
-      command_under_test = command("#{command_statement}")
+        command_under_test = command("#{command_full_path} #{command_suffix}")
     end
 
     # verify output
     describe command_under_test do
       its('exit_status') { should cmp exit_pattern }
-      its(io) { should match command_output_pattern }
+      its("stdout") { should match command_output_pattern }
     end
   end
 end
