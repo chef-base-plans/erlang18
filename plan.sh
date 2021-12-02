@@ -23,6 +23,11 @@ pkg_bin_dirs=(bin)
 pkg_include_dirs=(include)
 pkg_lib_dirs=(lib)
 
+do_unpack() {
+	cd ${HAB_CACHE_SRC_PATH}
+	tar zxf otp_src_${pkg_version}.tar.gz --one-top-level=${pkg_dirname} --strip-components=1
+}
+
 do_prepare() {
   # The `/bin/pwd` path is hardcoded, so we'll add a symlink if needed.
   if [[ ! -r /bin/pwd ]]; then
@@ -34,7 +39,11 @@ do_prepare() {
     ln -sv "$(pkg_path_for coreutils)/bin/rm" /bin/rm
     _clean_rm=true
   fi
-	cp -r ${HAB_CACHE_SRC_PATH}/erlang-otp-0b88ef5/* ${HAB_CACHE_SRC_PATH}/${pkg_dirname}
+	# The `/usr/bin/env` path is hardcoded, so we'll add a symlink if needed.
+	if [[ ! -r /usr/bin/env ]]; then
+		ln -sv "$(pkg_path_for coreutils)/bin/env" /usr/bin/env
+		_clean_env=true
+	fi
 }
 
 do_build() {
@@ -62,4 +71,8 @@ do_end() {
   if [[ -n "$_clean_rm" ]]; then
     rm -fv /bin/rm
   fi
+
+	if [[ -n "$_clean_env" ]]; then
+		rm -fv /usr/bin/env
+	fi
 }
